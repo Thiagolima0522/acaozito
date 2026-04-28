@@ -847,17 +847,11 @@ def main() -> None:
     app.job_queue.run_repeating(job_verificar_alertas,  interval=60,  first=15)
     app.job_queue.run_repeating(job_painel_monitorados, interval=300, first=30)
 
-    if WEBHOOK_URL:
-        log.info("🚀 WEBHOOK — %s | porta %s", WEBHOOK_URL, PORT)
-        app.run_webhook(
-            listen="0.0.0.0",
-            port=PORT,
-            webhook_url=f"{WEBHOOK_URL}/webhook",
-            url_path="/webhook",
-        )
-    else:
-        log.info("🖥️  POLLING (local)")
-        app.run_polling(allowed_updates=Update.ALL_TYPES)
+    log.info("🖥️  Modo POLLING — iniciando...")
+    app.run_polling(
+        allowed_updates=Update.ALL_TYPES,
+        drop_pending_updates=True,
+    )
 
 
 if __name__ == "__main__":
